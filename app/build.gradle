@@ -1,0 +1,74 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-android'
+}
+
+android {
+    def globalConfiguration = rootProject.extensions.getByName("ext")
+
+    namespace 'com.diavolo.movieznow'
+    compileSdk globalConfiguration["compileSdkVersion"]
+
+    defaultConfig {
+        applicationId "com.diavolo.movieznow"
+        minSdk globalConfiguration["minSdkVersion"]
+        targetSdk globalConfiguration["targetSdkVersion"]
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // Enabling multidex support
+        multiDexEnabled true
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11.toString()
+    }
+}
+
+dependencies {
+    def appDependencies = rootProject.ext.appDependencies
+    def appTestDependencies = rootProject.ext.appTestDependencies
+
+    implementation project(':model')
+    implementation project(':data')
+    implementation project(':domain')
+
+    implementation appDependencies.kotlin
+    implementation appDependencies.kotlinKtx
+    implementation appDependencies.appCompat
+    implementation appDependencies.material
+    implementation appDependencies.constraintLayout
+    implementation appDependencies.timber
+    implementation appDependencies.navigationFragment
+    implementation appDependencies.navigationUi
+    implementation appDependencies.swipeRefreshLayout
+    implementation appDependencies.glide
+    implementation appDependencies.palette
+    implementation appDependencies.rxKotlin
+    implementation appDependencies.rxAndroid
+    implementation appDependencies.coroutines
+    implementation appDependencies.coroutinesAndroid
+    implementation appDependencies.koinAndroid
+    implementation appDependencies.threeTen
+
+    testImplementation appTestDependencies.jUnit
+    androidTestImplementation appTestDependencies.jUnitAndroidX
+    androidTestImplementation appTestDependencies.espresso
+}
