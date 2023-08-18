@@ -1,5 +1,23 @@
 plugins {
-    id 'kotlin'
+    id 'org.jetbrains.kotlin.android'
+    id 'com.android.library'
+    id 'kotlin-android'
+}
+
+android {
+    def globalConfiguration = rootProject.extensions.getByName("ext")
+
+    namespace 'com.diavolo.domain'
+
+    compileSdk globalConfiguration["compileSdkVersion"]
+    defaultConfig {
+        minSdk globalConfiguration["minSdkVersion"]
+        targetSdk globalConfiguration["targetSdkVersion"]
+
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+    }
 }
 
 configurations.configureEach {

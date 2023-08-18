@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-android'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 
 android {
@@ -67,6 +68,7 @@ dependencies {
     implementation appDependencies.coroutinesAndroid
     implementation appDependencies.koinAndroid
     implementation appDependencies.threeTen
+    implementation appDependencies.expandableTextView
 
     testImplementation appTestDependencies.jUnit
     androidTestImplementation appTestDependencies.jUnitAndroidX

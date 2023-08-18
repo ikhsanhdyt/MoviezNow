@@ -1,4 +1,4 @@
-package com.diavolo.movieznow.ui.home.master
+package com.diavolo.movieznow.ui.home.adapter
 
 import android.content.Context
 import android.graphics.Color

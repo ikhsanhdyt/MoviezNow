@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/rounded_corner_white"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/item_review_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="title" />
+
+    <com.ms.square.android.expandabletextview.ExpandableTextView
+        android:id="@+id/item_review_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:animAlphaStart="1"
+        app:animDuration="200"
+        app:collapseDrawable="@drawable/arrow_up"
+        app:expandDrawable="@drawable/arrow_down"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_review_title"
+        app:maxCollapsedLines="4">
+
+        <TextView
+            android:id="@id/expandable_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:fontFamily="sans-serif-light"
+            android:lineSpacingMultiplier="1.2"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            tools:text="content" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@id/expand_collapse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="6dp" />
+
+    </com.ms.square.android.expandabletextview.ExpandableTextView>
+</androidx.constraintlayout.widget.ConstraintLayout>

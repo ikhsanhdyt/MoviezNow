@@ -12,6 +12,9 @@ object ApiClient {
 
     private const val BASE_URL = "https://api.themoviedb.org/3/"
     const val POSTER_BASE_URL = "https://image.tmdb.org/t/p/w500"
+    const val YOUTUBE_VIDEO_BASE_URL = "https://www.youtube.com/watch?v="
+    const val YOUTUBE_THUMBNAIL_BASE_URL = "https://img.youtube.com/vi/"
+
 
     private val retrofit: Retrofit = Retrofit
         .Builder()

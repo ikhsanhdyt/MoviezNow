@@ -27,8 +27,6 @@ class MovieListViewModel(
     private var currentPage = 1
     private var lastPage = 1
 
-    private val genreIdStateFlow = MutableStateFlow<Resource<String>>(Resource.empty())
-
     var disposable: Disposable? = null
 
     val movieListState: StateFlow<Resource<List<Movie>>>
@@ -36,8 +34,6 @@ class MovieListViewModel(
     val genreListState: StateFlow<Resource<List<Genre>>>
         get() = genreStateFlow
 
-    val genreIdState: StateFlow<Resource<String>>
-        get() = genreIdStateFlow
 
     private val _genreId = MutableStateFlow<String>("")
     val genreId: StateFlow<String> get() = _genreId

@@ -3,6 +3,7 @@ package com.diavolo.movieznow
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.diavolo.movieznow.di.mainModule
+import com.diavolo.movieznow.di.movieDetailModule
 import com.diavolo.movieznow.di.movieListModule
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.koin.android.ext.koin.androidContext
@@ -17,7 +18,7 @@ class MoviezNowApp : Application() {
 
         startKoin {
             androidContext(this@MoviezNowApp)
-            modules(mainModule, movieListModule)
+            modules(mainModule, movieListModule, movieDetailModule)
         }
         setupTimberLog()
     }
