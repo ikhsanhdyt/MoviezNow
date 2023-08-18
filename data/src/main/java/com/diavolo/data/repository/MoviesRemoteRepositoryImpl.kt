@@ -11,11 +11,13 @@ import io.reactivex.Single
 class MoviesRemoteRepositoryImpl(private val moviesRemoteMapper: MoviesRemoteMapper) :
     MoviesRemoteRepository {
     override fun getGenreMovies(): Single<GenreResponse> {
-        TODO("Not yet implemented")
+        return ApiClient.movieService().getGenreMovies().map {
+            moviesRemoteMapper.mapGenreFromRemote(it)
+        }
     }
 
     override fun getMoviesByGenre(genreId: String, page: Int): Single<MoviesResponse> {
-        return ApiClient.movieService().getMovieListByGenre(genreId,page).map {
+        return ApiClient.movieService().getMovieListByGenre(genreId, page).map {
             moviesRemoteMapper.mapFromRemote(it)
         }
     }

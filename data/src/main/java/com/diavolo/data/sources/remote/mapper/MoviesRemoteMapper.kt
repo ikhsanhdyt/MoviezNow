@@ -1,12 +1,25 @@
 package com.diavolo.data.sources.remote.mapper
 
+import com.diavolo.data.sources.remote.model.RemoteGenreMoviesResponse
+import com.diavolo.data.sources.remote.model.RemoteMoviesResponse
+import com.diavolo.model.Genre
+import com.diavolo.model.GenreResponse
 import com.diavolo.model.Movie
 import com.diavolo.model.MoviesResponse
-import com.diavolo.data.sources.remote.model.RemoteMoviesResponse
 import com.marcoscg.movies.model.utils.orDefault
 import com.marcoscg.movies.model.utils.orFalse
 
 class MoviesRemoteMapper {
+
+    fun mapGenreFromRemote(remoteGenreMoviesResponse: RemoteGenreMoviesResponse): GenreResponse {
+        return GenreResponse(
+            remoteGenreMoviesResponse.results.map { remoteGenre ->
+                Genre(
+                    remoteGenre.id,
+                    remoteGenre.name.orEmpty()
+                )
+            })
+    }
 
     fun mapFromRemote(remoteMoviesResponse: RemoteMoviesResponse): MoviesResponse {
         return MoviesResponse(remoteMoviesResponse.page,

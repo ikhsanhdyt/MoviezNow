@@ -1,36 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.diavolo.movieznow.common.widget.CustomSwipeRefreshLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.diavolo.movieznow.common.widget.CustomSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/srl_fragment_movie_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/margin_minimum"
+        android:paddingTop="@dimen/margin_minimum"
+        android:paddingEnd="@dimen/margin_minimum">
 
-        <com.diavolo.movieznow.common.widget.AutofitRecyclerView
-            android:id="@+id/rv_fragment_movie_list"
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/genres_chip_group"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:columnWidth="@dimen/grid_column_width"
-            android:paddingTop="@dimen/margin_minimum"
-            android:paddingLeft="@dimen/margin_minimum"
-            android:paddingRight="@dimen/margin_minimum"
-            android:paddingBottom="@dimen/margin_huge"
-            tools:listitem="@layout/item_movie_list" />
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:singleLine="false"
+            android:focusable="true"
+            app:singleSelection="true"/>
 
-        <ProgressBar
-            android:id="@+id/pb_fragment_movie_list"
-            android:layout_width="@dimen/small_progress_bar_size"
-            android:layout_height="@dimen/small_progress_bar_size"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/margin_semi_medium"
-            android:visibility="gone"/>
 
-    </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <com.diavolo.movieznow.common.widget.AutofitRecyclerView
+                android:id="@+id/rv_fragment_movie_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:columnWidth="@dimen/grid_column_width"
+                android:paddingBottom="@dimen/margin_huge"
+                tools:listitem="@layout/item_movie_list" />
+
+            <ProgressBar
+                android:id="@+id/pb_fragment_movie_list"
+                android:layout_width="@dimen/small_progress_bar_size"
+                android:layout_height="@dimen/small_progress_bar_size"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/margin_semi_medium"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+    </LinearLayout>
 
 </com.diavolo.movieznow.common.widget.CustomSwipeRefreshLayout>
