@@ -154,14 +154,13 @@
                 android:textStyle="bold"
                 tools:visibility="visible" />
 
-            <androidx.recyclerview.widget.RecyclerView
+            <com.diavolo.movieznow.common.widget.AutofitRecyclerView
                 android:id="@+id/rv_review"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:nestedScrollingEnabled="false"
                 android:orientation="vertical"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:ignore="UnusedAttribute"
                 tools:listitem="@layout/item_reviews"
                 tools:visibility="visible" />

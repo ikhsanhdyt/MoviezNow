@@ -7,6 +7,7 @@ import com.diavolo.domain.interactor.GetMoviesByGenreUseCase
 import com.diavolo.domain.interactor.GetReviewMoviesUseCase
 import com.diavolo.domain.interactor.GetTrailerMoviesUseCase
 import com.diavolo.domain.repository.MoviesRemoteRepository
+import com.diavolo.movieznow.ui.details.adapter.ReviewListAdapter
 import com.diavolo.movieznow.ui.details.adapter.TrailerListAdapter
 import com.diavolo.movieznow.ui.details.viewModel.MovieDetailsViewModel
 import com.diavolo.movieznow.ui.home.adapter.MovieListAdapter
@@ -20,6 +21,7 @@ val mainModule = module {
     factory<MoviesRemoteRepository> { MoviesRemoteRepositoryImpl(get()) }
     factory { MovieListAdapter(androidContext()) }
     factory { TrailerListAdapter(androidContext()) }
+    factory { ReviewListAdapter(androidContext()) }
 }
 
 val movieListModule = module {

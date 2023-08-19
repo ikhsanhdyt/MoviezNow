@@ -24,7 +24,7 @@ class MovieDetailsViewModel(
 
     private val trailerStateFlow = MutableStateFlow<Resource<TrailerResponse>>(Resource.empty())
     private val reviewStateFlow = MutableStateFlow<Resource<ReviewMoviesResponse>>(Resource.empty())
-    var disposable: Disposable? = null
+    private var disposable: Disposable? = null
     val trailerMovieState: StateFlow<Resource<TrailerResponse>>
         get() = trailerStateFlow
 
@@ -51,7 +51,7 @@ class MovieDetailsViewModel(
 
     fun fetchReview() {
         trailerStateFlow.value = Resource.loading()
-        disposable = getReviewMoviesUseCase.execute(_movieId.value,currentPage)
+        disposable = getReviewMoviesUseCase.execute(_movieId.value, currentPage)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ res ->

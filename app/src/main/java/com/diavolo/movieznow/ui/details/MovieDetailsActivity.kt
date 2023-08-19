@@ -6,6 +6,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.diavolo.data.sources.remote.api.ApiClient
+import com.diavolo.model.Review
+import com.diavolo.model.ReviewMoviesResponse
 import com.diavolo.model.Trailer
 import com.diavolo.model.TrailerResponse
 import com.diavolo.movieznow.R
@@ -15,20 +17,18 @@ import com.diavolo.movieznow.common.recyclerview.PaginationScrollListener
 import com.diavolo.movieznow.common.utils.ColorUtils.darken
 import com.diavolo.movieznow.common.utils.dp
 import com.diavolo.movieznow.common.utils.gone
-import com.diavolo.movieznow.common.utils.setAnchorId
 import com.diavolo.movieznow.common.utils.visible
 import com.diavolo.movieznow.data.Resource
 import com.diavolo.movieznow.databinding.ActivityMovieDetailsBinding
 import com.diavolo.movieznow.ui.details.adapter.ReviewListAdapter
 import com.diavolo.movieznow.ui.details.adapter.TrailerListAdapter
 import com.diavolo.movieznow.ui.details.viewModel.MovieDetailsViewModel
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-class MovieDetailsActivity : BaseActivity(), TrailerListAdapter.OnItemClickListener {
+class MovieDetailsActivity : BaseActivity(), TrailerListAdapter.OnItemClickListener,ReviewListAdapter.OnItemClickListener {
 
     private lateinit var binding: ActivityMovieDetailsBinding
     private val args: MovieDetailsActivityArgs by navArgs()
@@ -48,7 +48,7 @@ class MovieDetailsActivity : BaseActivity(), TrailerListAdapter.OnItemClickListe
         setupPosterImage()
         setContentData()
         setupTrailerRecyclerView()
-
+        setupReviewRecyclerView()
 
         lifecycleScope.launch {
             movieDetailsViewModel.trailerMovieState.collect {
@@ -56,8 +56,14 @@ class MovieDetailsActivity : BaseActivity(), TrailerListAdapter.OnItemClickListe
             }
         }
         lifecycleScope.launch {
+            movieDetailsViewModel.reviewState.collect {
+                handleReviewDataState(it)
+            }
+        }
+        lifecycleScope.launch {
             movieDetailsViewModel.movieId.collect {
                 movieDetailsViewModel.fetchTrailer()
+                movieDetailsViewModel.fetchReview()
             }
         }
     }
@@ -94,6 +100,41 @@ class MovieDetailsActivity : BaseActivity(), TrailerListAdapter.OnItemClickListe
         trailer?.let {
             trailerListAdapter.clear()
             trailerListAdapter.fillList(it.trailers)
+        }
+
+    }
+    private fun handleReviewDataState(state: Resource<ReviewMoviesResponse>) {
+        when (state.status) {
+            Resource.Status.LOADING -> {
+                binding.progressBar.visible()
+            }
+
+            Resource.Status.SUCCESS -> {
+                binding.progressBar.gone()
+                loadReviews(state.data)
+            }
+
+            Resource.Status.ERROR -> {
+                binding.progressBar.gone()
+
+//                Snackbar.make(
+//                    binding.progressBar,
+//                    getString(R.string.error_message_pattern, state.message),
+//                    Snackbar.LENGTH_LONG
+//                )
+//                    .setAnchorId(R.id.bottom_navigation).show()
+            }
+
+            Resource.Status.EMPTY -> {
+                Timber.d("Empty state.")
+            }
+        }
+    }
+
+    private fun loadReviews(review: ReviewMoviesResponse?) {
+        review?.let {
+            reviewListAdapter.clear()
+            reviewListAdapter.fillList(it.reviews)
         }
 
     }
@@ -145,6 +186,31 @@ class MovieDetailsActivity : BaseActivity(), TrailerListAdapter.OnItemClickListe
 
     }
 
+    private fun setupReviewRecyclerView() {
+        reviewListAdapter.setOnReviewClickListener(this)
+
+        binding.rvReview.adapter = reviewListAdapter
+        binding.rvReview.addOnScrollListener(object :
+            PaginationScrollListener(binding.rvReview.linearLayoutManager) {
+            override fun isLoading(): Boolean {
+
+                return movieDetailsViewModel.reviewState.value.status == Resource.Status.LOADING
+            }
+
+            override fun isLastPage(): Boolean {
+                return movieDetailsViewModel.isLastPage()
+            }
+
+            override fun loadMoreItems() {
+                movieDetailsViewModel.fetchNextReviews()
+            }
+        })
+    }
+
     override fun onItemClick(trailer: Trailer, container: View) {
+    }
+
+    override fun onItemClick(review: Review, container: View) {
+
     }
 }

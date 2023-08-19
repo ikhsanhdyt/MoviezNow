@@ -74,15 +74,8 @@ class MoviesRemoteMapper {
             remoteTrailerResponse.trailers.map { remoteTrailer ->
                 Trailer(
                     remoteTrailer.id,
-                    remoteTrailer.name,
                     remoteTrailer.key,
-                    remoteTrailer.iso6391,
-                    remoteTrailer.iso31661,
-                    remoteTrailer.official,
-                    remoteTrailer.publishedAt,
-                    remoteTrailer.site,
-                    remoteTrailer.size,
-                    remoteTrailer.type,
+                    remoteTrailer.name,
                 )
             },
         )
