@@ -10,6 +10,7 @@ import com.diavolo.domain.repository.MoviesRemoteRepository
 import com.diavolo.movieznow.ui.details.adapter.ReviewListAdapter
 import com.diavolo.movieznow.ui.details.adapter.TrailerListAdapter
 import com.diavolo.movieznow.ui.details.viewModel.MovieDetailsViewModel
+import com.diavolo.movieznow.ui.home.adapter.ImageSliderAdapter
 import com.diavolo.movieznow.ui.home.adapter.MovieListAdapter
 import com.diavolo.movieznow.ui.home.viewModel.MovieListViewModel
 import org.koin.android.ext.koin.androidContext
@@ -22,6 +23,7 @@ val mainModule = module {
     factory { MovieListAdapter(androidContext()) }
     factory { TrailerListAdapter(androidContext()) }
     factory { ReviewListAdapter(androidContext()) }
+    factory { ImageSliderAdapter(androidContext()) }
 }
 
 val movieListModule = module {

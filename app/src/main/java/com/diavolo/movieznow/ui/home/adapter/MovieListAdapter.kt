@@ -66,7 +66,7 @@ class MovieListAdapter(val context: Context?, var items: List<Movie> = ArrayList
         this.onItemClickListener = onItemClickListener
     }
 
-    fun fillList(items: List<com.diavolo.model.Movie>) {
+    fun fillList(items: List<Movie>) {
         this.items += items
         notifyDataSetChanged()
     }

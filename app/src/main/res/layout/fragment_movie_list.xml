@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.diavolo.movieznow.common.widget.CustomSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/srl_fragment_movie_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -14,20 +14,39 @@
         android:paddingTop="@dimen/margin_minimum"
         android:paddingEnd="@dimen/margin_minimum">
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/genres_chip_group"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vp_carousel"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
+
+        <LinearLayout
+            android:id="@+id/ll_dots_indicator"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            app:singleLine="false"
-            android:focusable="true"
-            app:singleSelection="true"/>
+            android:gravity="center_vertical|center_horizontal"
+            android:orientation="horizontal">
+
+
+        </LinearLayout>
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/genres_chip_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                app:singleLine="true"
+                app:singleSelection="true" />
+        </HorizontalScrollView>
 
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
 
             <com.diavolo.movieznow.common.widget.AutofitRecyclerView
                 android:id="@+id/rv_fragment_movie_list"
@@ -38,16 +57,17 @@
                 android:paddingBottom="@dimen/margin_huge"
                 tools:listitem="@layout/item_movie_list" />
 
-            <ProgressBar
-                android:id="@+id/pb_fragment_movie_list"
-                android:layout_width="@dimen/small_progress_bar_size"
-                android:layout_height="@dimen/small_progress_bar_size"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="@dimen/margin_semi_medium"
-                android:visibility="gone" />
 
         </RelativeLayout>
     </LinearLayout>
 
-</com.diavolo.movieznow.common.widget.CustomSwipeRefreshLayout>
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

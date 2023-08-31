@@ -1,4 +1,4 @@
-package com.marcoscg.movies.model.utils
+package com.diavolo.model.utils
 
 const val DEFAULT_INT = Int.MIN_VALUE
 const val DEFAULT_LONG = Long.MIN_VALUE

@@ -13,5 +13,4 @@ interface MoviesRemoteRepository {
     fun getMoviesByGenre(genreId: String, page: Int): Single<MoviesResponse>
     fun getTrailerMovies(movieId: String): Single<TrailerResponse>
     fun getReviewMovies(movieId: String, page: Int): Single<ReviewMoviesResponse>
-
 }

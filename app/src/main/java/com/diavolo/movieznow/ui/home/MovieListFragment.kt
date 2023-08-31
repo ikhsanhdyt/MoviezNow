@@ -1,14 +1,18 @@
 package com.diavolo.movieznow.ui.home
 
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
 import com.diavolo.model.Genre
 import com.diavolo.model.Movie
 import com.diavolo.movieznow.R
@@ -18,6 +22,7 @@ import com.diavolo.movieznow.common.utils.setAnchorId
 import com.diavolo.movieznow.common.utils.visible
 import com.diavolo.movieznow.data.Resource
 import com.diavolo.movieznow.databinding.FragmentMovieListBinding
+import com.diavolo.movieznow.ui.home.adapter.ImageSliderAdapter
 import com.diavolo.movieznow.ui.home.adapter.MovieListAdapter
 import com.diavolo.movieznow.ui.home.viewModel.MovieListViewModel
 import com.google.android.material.chip.Chip
@@ -33,12 +38,16 @@ import androidx.core.util.Pair as UtilPair
  * Written with passion by Ikhsan Hidayat on 18/08/2023.
  */
 class MovieListFragment : Fragment(R.layout.fragment_movie_list),
-    MovieListAdapter.OnItemClickListener {
+    MovieListAdapter.OnItemClickListener, ImageSliderAdapter.OnItemClickListener {
     private val movieListViewModel: MovieListViewModel by sharedViewModel()
     private val movieListAdapter: MovieListAdapter by inject()
 
+    private val imageSliderAdapter: ImageSliderAdapter by inject()
+
     private var _binding: FragmentMovieListBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var dots: ArrayList<TextView>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,7 +64,7 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list),
         movieListViewModel.fetchGenreListMovies()
 
         setupRecyclerView()
-        setupSwipeRefresh()
+        setupViewPager()
 
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -72,7 +81,7 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list),
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            movieListViewModel.genreId.collect { updatedGenreId ->
+            movieListViewModel.genreId.collect {
                 movieListViewModel.refreshMovies()
             }
 
@@ -80,10 +89,9 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list),
 
     }
 
-
     override fun onItemClick(movie: Movie, container: View) {
         val action = MovieListFragmentDirections.navigateToMovieDetails(
-           movie = movie
+            movie = movie
         )
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
             requireActivity(),
@@ -103,23 +111,18 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list),
     private fun handleMoviesDataState(state: Resource<List<Movie>>) {
         when (state.status) {
             Resource.Status.LOADING -> {
-                binding.srlFragmentMovieList.isRefreshing = true
+                binding.progressBar.visible()
             }
 
             Resource.Status.SUCCESS -> {
-                binding.srlFragmentMovieList.isRefreshing = false
+                binding.progressBar.gone()
+                loadCarousel(state.data)
                 loadMovies(state.data)
             }
 
             Resource.Status.ERROR -> {
-                binding.srlFragmentMovieList.isRefreshing = false
-                binding.pbFragmentMovieList.gone()
-                Snackbar.make(
-                    binding.srlFragmentMovieList,
-                    getString(R.string.error_message_pattern, state.message),
-                    Snackbar.LENGTH_LONG
-                )
-                    .setAnchorId(R.id.bottom_navigation).show()
+                binding.progressBar.gone()
+
             }
 
             Resource.Status.EMPTY -> {
@@ -131,23 +134,17 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list),
     private fun handleGenreDataState(state: Resource<List<Genre>>) {
         when (state.status) {
             Resource.Status.LOADING -> {
-                binding.srlFragmentMovieList.isRefreshing = true
+                binding.progressBar.visible()
             }
 
             Resource.Status.SUCCESS -> {
-                binding.srlFragmentMovieList.isRefreshing = false
+                binding.progressBar.gone()
                 loadChipGenres(state.data)
             }
 
             Resource.Status.ERROR -> {
-                binding.srlFragmentMovieList.isRefreshing = false
-                binding.pbFragmentMovieList.gone()
-                Snackbar.make(
-                    binding.srlFragmentMovieList,
-                    getString(R.string.error_message_pattern, state.message),
-                    Snackbar.LENGTH_LONG
-                )
-                    .setAnchorId(R.id.bottom_navigation).show()
+                binding.progressBar.gone()
+
             }
 
             Resource.Status.EMPTY -> {
@@ -167,6 +164,31 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list),
         }
     }
 
+    private fun loadCarousel(movies: List<Movie>?) {
+        dots = ArrayList()
+        movies?.let {
+            val takeFour = movies.take(4)
+            imageSliderAdapter.clear()
+            imageSliderAdapter.fillList(takeFour)
+
+            setIndicator()
+
+            Timber.tag("MovieListFragment-loadCarousel").e(dots.toString())
+            Timber.tag("MovieListFragment-loadCarousel").e(dots.size.toString())
+        }
+    }
+
+    private fun setIndicator() {
+        dots.clear()
+        binding.llDotsIndicator.removeAllViews()
+        for (i in 0 until 4) {
+            dots.add(TextView(requireContext()))
+            dots[i].text = Html.fromHtml("&#9679", Html.FROM_HTML_MODE_LEGACY).toString()
+            dots[i].textSize = 18f
+            binding.llDotsIndicator.addView(dots[i])
+        }
+    }
+
     private fun loadChipGenres(genres: List<Genre>?) {
         genres?.forEach {
             val genreChip = layoutInflater.inflate(
@@ -179,7 +201,7 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list),
             genreChip.text = it.name
             genreChip.isCheckable = true
 
-            genreChip.setOnCheckedChangeListener { compoundButton, b ->
+            genreChip.setOnCheckedChangeListener { _, b ->
                 if (b) {
                     movieListViewModel.updateGenreId(genreChip.tag.toString())
                 }
@@ -196,15 +218,8 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list),
         binding.rvFragmentMovieList.addOnScrollListener(object :
             PaginationScrollListener(binding.rvFragmentMovieList.linearLayoutManager) {
             override fun isLoading(): Boolean {
-                val isLoading = binding.srlFragmentMovieList.isRefreshing
+                return movieListViewModel.movieListState.value.status == Resource.Status.LOADING
 
-                if (isLoading) {
-                    binding.pbFragmentMovieList.visible()
-                } else {
-                    binding.pbFragmentMovieList.gone()
-                }
-
-                return isLoading
             }
 
             override fun isLastPage(): Boolean {
@@ -217,11 +232,28 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list),
         })
     }
 
-    private fun setupSwipeRefresh() {
-        binding.srlFragmentMovieList.setOnRefreshListener {
-            movieListViewModel.refreshMovies()
-        }
+    private fun setupViewPager() {
+        imageSliderAdapter.setOnSliderClickListener(this)
+
+        binding.vpCarousel.adapter = imageSliderAdapter
+
+        binding.vpCarousel.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                selectedDot(position)
+                super.onPageSelected(position)
+            }
+        })
+
     }
 
+    private fun selectedDot(position: Int) {
+        for (i in 0 until 4) {
+            if (i == position) {
+                dots[i].setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+            } else {
+                dots[i].setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
+            }
+        }
+    }
 
 }

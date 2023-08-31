@@ -12,8 +12,8 @@ import com.diavolo.model.Review
 import com.diavolo.model.ReviewMoviesResponse
 import com.diavolo.model.Trailer
 import com.diavolo.model.TrailerResponse
-import com.marcoscg.movies.model.utils.orDefault
-import com.marcoscg.movies.model.utils.orFalse
+import com.diavolo.model.utils.orDefault
+import com.diavolo.model.utils.orFalse
 
 class MoviesRemoteMapper {
 

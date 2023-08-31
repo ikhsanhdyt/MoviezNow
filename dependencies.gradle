@@ -53,7 +53,7 @@ ext {
             coroutines        : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion",
             coroutinesAndroid : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion",
             koinAndroid       : "io.insert-koin:koin-android:$koinVersion",
-            expandableTextView: "com.ms-square:expandableTextView:$expandableTextViewVersion"
+            expandableTextView: "com.ms-square:expandableTextView:$expandableTextViewVersion",
 
 
     ]
