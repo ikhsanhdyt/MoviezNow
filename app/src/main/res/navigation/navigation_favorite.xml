@@ -3,16 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_favorite"
-    app:startDestination="@id/nav_favorite"
-    tools:ignore="UnusedNavigation">
+    app:startDestination="@id/nav_favorite">
 
     <fragment
         android:id="@+id/nav_favorite"
-        android:name="com.diavolo.movieznow.ui.home.FavoriteFragment"
+        android:name="com.diavolo.movieznow.ui.favorite.FavoriteFragment"
         android:label="@string/favorite_movies"
         tools:layout="@layout/fragment_movie_list">
-
-
     </fragment>
 
 

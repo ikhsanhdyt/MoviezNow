@@ -104,7 +104,6 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list),
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        binding.genresChipGroup.removeAllViews()
         movieListViewModel.disposable?.dispose()
     }
 

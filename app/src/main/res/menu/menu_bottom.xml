@@ -12,6 +12,6 @@
         android:title="@string/favorite_movies"
         app:showAsAction="ifRoom"
         android:orderInCategory="2"
-        android:icon="@drawable/ic_star"/>
+        android:icon="@drawable/ic_star_border"/>
 
 </menu>

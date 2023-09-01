@@ -2,6 +2,7 @@ package com.diavolo.movieznow.ui.details
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,7 +29,8 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-class MovieDetailsActivity : BaseActivity(), TrailerListAdapter.OnItemClickListener,ReviewListAdapter.OnItemClickListener {
+class MovieDetailsActivity : BaseActivity(), TrailerListAdapter.OnItemClickListener,
+    ReviewListAdapter.OnItemClickListener {
 
     private lateinit var binding: ActivityMovieDetailsBinding
     private val args: MovieDetailsActivityArgs by navArgs()
@@ -42,6 +44,15 @@ class MovieDetailsActivity : BaseActivity(), TrailerListAdapter.OnItemClickListe
         binding = ActivityMovieDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        initView()
+        initData()
+    }
+
+    private fun initData() {
+        observeData()
+    }
+
+    private fun initView() {
         setupToolbar()
         clearStatusBar()
 
@@ -50,6 +61,9 @@ class MovieDetailsActivity : BaseActivity(), TrailerListAdapter.OnItemClickListe
         setupTrailerRecyclerView()
         setupReviewRecyclerView()
 
+    }
+
+    private fun observeData() {
         lifecycleScope.launch {
             movieDetailsViewModel.trailerMovieState.collect {
                 handleTrailerDataState(it)
@@ -64,6 +78,11 @@ class MovieDetailsActivity : BaseActivity(), TrailerListAdapter.OnItemClickListe
             movieDetailsViewModel.movieId.collect {
                 movieDetailsViewModel.fetchTrailer()
                 movieDetailsViewModel.fetchReview()
+            }
+        }
+        lifecycleScope.launch {
+            movieDetailsViewModel.favoritesState.collect {
+                handleFavoriteMovieDataState(it)
             }
         }
     }
@@ -103,6 +122,7 @@ class MovieDetailsActivity : BaseActivity(), TrailerListAdapter.OnItemClickListe
         }
 
     }
+
     private fun handleReviewDataState(state: Resource<ReviewMoviesResponse>) {
         when (state.status) {
             Resource.Status.LOADING -> {
@@ -131,6 +151,23 @@ class MovieDetailsActivity : BaseActivity(), TrailerListAdapter.OnItemClickListe
         }
     }
 
+    private fun handleFavoriteMovieDataState(state: Resource<Boolean>) {
+        when (state.status) {
+            Resource.Status.LOADING -> {}
+            Resource.Status.SUCCESS -> {
+                updateFavoriteButton(state.data)
+            }
+
+            Resource.Status.ERROR -> {
+                Toast.makeText(this, "Error: ${state.message}", Toast.LENGTH_LONG).show()
+            }
+
+            Resource.Status.EMPTY -> {
+                Timber.d("Empty state.")
+            }
+        }
+    }
+
     private fun loadReviews(review: ReviewMoviesResponse?) {
         review?.let {
             reviewListAdapter.clear()
@@ -139,13 +176,29 @@ class MovieDetailsActivity : BaseActivity(), TrailerListAdapter.OnItemClickListe
 
     }
 
+    private fun updateFavoriteButton(data: Boolean?) {
+        data?.let { favorite ->
+            binding.favoriteFab.setImageResource(
+                if (favorite)
+                    R.drawable.ic_star_filled
+                else
+                    R.drawable.ic_star_border
+            )
+        }
+    }
 
     private fun setContentData() {
         movieDetailsViewModel.updateMovieId(args.movie.id.toString())
+        movieDetailsViewModel.fetchFavoriteMovieState(args.movie)
+
         binding.tvHeaderTitle.text = args.movie.title
         binding.tvHeaderRelease.text = getString(R.string.release_date, args.movie.release_date)
         binding.tvHeaderStar.rating = args.movie.vote_average.div(2).toFloat()
         binding.detailBodySummary.text = args.movie.overview
+
+        binding.favoriteFab.setOnClickListener {
+            movieDetailsViewModel.toggleFavorite(args.movie)
+        }
     }
 
     private fun setupToolbar() {
@@ -177,8 +230,9 @@ class MovieDetailsActivity : BaseActivity(), TrailerListAdapter.OnItemClickListe
     private fun setupTrailerRecyclerView() {
         trailerListAdapter.setOnTrailerClickListener(this)
         binding.rvTrailers.apply {
-            layoutManager =
-                LinearLayoutManager(this@MovieDetailsActivity, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(
+                this@MovieDetailsActivity, LinearLayoutManager.HORIZONTAL, false
+            )
 
             adapter = this@MovieDetailsActivity.trailerListAdapter
         }

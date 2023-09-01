@@ -176,6 +176,7 @@
         app:backgroundTint="@color/colorLightGray"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@drawable/ic_star" />
+        app:srcCompat="@drawable/ic_star_border"
+        android:contentDescription="@string/favorite" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
