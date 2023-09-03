@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -111,21 +112,25 @@ class MovieListFragment : Fragment(R.layout.fragment_movie_list),
         when (state.status) {
             Resource.Status.LOADING -> {
                 binding.progressBar.visible()
+                binding.tvNoData.visible()
             }
 
             Resource.Status.SUCCESS -> {
                 binding.progressBar.gone()
+                binding.tvNoData.gone()
                 loadCarousel(state.data)
                 loadMovies(state.data)
             }
 
             Resource.Status.ERROR -> {
+                binding.tvNoData.gone()
                 binding.progressBar.gone()
-
+                Toast.makeText(requireContext(), "Error: ${state.message}", Toast.LENGTH_LONG).show()
             }
 
             Resource.Status.EMPTY -> {
                 Timber.d("Empty state.")
+                binding.tvNoData.visible()
             }
         }
     }
